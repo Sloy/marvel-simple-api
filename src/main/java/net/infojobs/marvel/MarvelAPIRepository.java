@@ -10,12 +10,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -23,23 +23,28 @@ import static java.util.stream.Collectors.toList;
 @Qualifier("api")
 public class MarvelAPIRepository implements MarvelRepository {
 
+    public static final int RESULT_LIMIT = 100;
+    public static final String RESULT_ORDER = "-modified";
     @Autowired
     private CharactersService charactersService;
 
     private Random random = new Random();
 
     @Override
-    public List<SimpleCharacter> characters() throws IOException, QueryException, AuthorizationException {
-        Map<ListCharacterParamName, String> options = new HashMap<>();
-        options.put(ListCharacterParamName.ORDER_BY, "-modified");
-        options.put(ListCharacterParamName.LIMIT, "100");
-        List<Character> results = charactersService.listCharacter(options).getData().getResults();
-
-        return results.stream()
+    public List<SimpleCharacter> characters() throws QueryException, AuthorizationException {
+        return Stream.concat(requestCharactersPage(0), requestCharactersPage(1))
           .filter(character -> !character.getDescription().isEmpty())
           .sorted((o1, o2) -> randomOrder())
           .map(SimpleCharacter::fromCharacter)
           .collect(toList());
+    }
+
+    private Stream<Character> requestCharactersPage(int page) throws AuthorizationException, QueryException {
+        Map<ListCharacterParamName, String> options = new HashMap<>();
+        options.put(ListCharacterParamName.ORDER_BY, RESULT_ORDER);
+        options.put(ListCharacterParamName.LIMIT, String.valueOf(RESULT_LIMIT));
+        options.put(ListCharacterParamName.OFFSET, String.valueOf(page * RESULT_LIMIT));
+        return charactersService.listCharacter(options).getData().getResults().parallelStream();
     }
 
     @Override
