@@ -26,7 +26,7 @@ public class MarvelController {
     private CharactersService charactersService;
     private Random random = new Random();
 
-    @RequestMapping("/v1/public/characters")
+    @RequestMapping("/characters")
     public List<SimpleCharacter> characters() throws IOException, QueryException, AuthorizationException {
         Map<ListCharacterParamName, String> options = new HashMap<>();
         options.put(ListCharacterParamName.ORDER_BY, "-modified");
@@ -40,7 +40,7 @@ public class MarvelController {
           .collect(toList());
     }
 
-    @RequestMapping("/v1/public/characters/{name}")
+    @RequestMapping("/characters/{name}")
     public SimpleCharacter character(@PathVariable("name") String name) throws QueryException, AuthorizationException {
         Map<ListCharacterParamName, String> options = new HashMap<>();
         options.put(ListCharacterParamName.NAME, name);
