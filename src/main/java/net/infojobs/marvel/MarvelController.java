@@ -3,6 +3,7 @@ package net.infojobs.marvel;
 import com.arnaudpiroelle.marvel.api.exceptions.AuthorizationException;
 import com.arnaudpiroelle.marvel.api.exceptions.QueryException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import java.util.List;
 public class MarvelController {
 
     @Autowired
+    @Qualifier("cache")
     MarvelRepository marvelRepository;
 
     @RequestMapping("/characters")

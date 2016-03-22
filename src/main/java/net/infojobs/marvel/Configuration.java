@@ -2,6 +2,8 @@ package net.infojobs.marvel;
 
 import com.arnaudpiroelle.marvel.api.MarvelApi;
 import com.arnaudpiroelle.marvel.api.services.sync.CharactersService;
+import com.fewlaps.quitnowcache.QNCache;
+import com.fewlaps.quitnowcache.QNCacheBuilder;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,5 +24,10 @@ public class Configuration {
           .init();
 
         return MarvelApi.getService(CharactersService.class);
+    }
+
+    @Bean
+    public QNCache cacheManager() {
+        return new QNCacheBuilder().createQNCache();
     }
 }
