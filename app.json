@@ -2,6 +2,16 @@
   "name": "Marvel API Simplified",
   "description": "A simplified version of the Marvel API",
   "repository": "https://github.com/Sloy/marvel-simple-api",
-  "logo": "http://vignette2.wikia.nocookie.net/logopedia/images/a/a8/Marvel-logo.png/revision/latest?cb=20140701230531",
-  "keywords": ["marvel", "spring", "api"]
+  "keywords": ["marvel", "spring", "api"],
+  "success_url": "/characters",
+  "env": {
+    "PUBLIC_KEY": {
+      "description": "Your Marvel API public key. Get it at https://developer.marvel.com/account",
+      "required": true
+    },
+    "PRIVATE_KEY": {
+      "description": "Your Marvel API private key. Get it at https://developer.marvel.com/account",
+      "required": true
+    }
+  }
 }
