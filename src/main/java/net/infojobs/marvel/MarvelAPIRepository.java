@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.toList;
 @Qualifier("api")
 public class MarvelAPIRepository implements MarvelRepository {
 
-    public static final int RESULT_LIMIT = 100;
+    public static final int RESULT_LIMIT = 50;
     public static final String RESULT_ORDER = "-modified";
     @Autowired
     private CharactersService charactersService;
