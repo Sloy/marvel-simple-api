@@ -8,12 +8,25 @@ public class SimpleCharacter {
     private String description;
     private String photo;
 
+    private SimpleCharacter(Builder builder) {
+        this.name = builder.name;
+        this.description = builder.description;
+        this.photo = builder.photo;
+    }
+
+    public SimpleCharacter() {
+    }
+
     public static SimpleCharacter fromCharacter(Character character) {
         SimpleCharacter simpleCharacter = new SimpleCharacter();
         simpleCharacter.setName(character.getName());
         simpleCharacter.setDescription(character.getDescription());
         simpleCharacter.setPhoto(character.getThumbnail().getPath() + "." + character.getThumbnail().getExtension());
         return simpleCharacter;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public String getName() {
@@ -47,5 +60,33 @@ public class SimpleCharacter {
           ", description='" + description + '\'' +
           ", photo='" + photo + '\'' +
           '}';
+    }
+
+    public static final class Builder {
+        private String name;
+        private String description;
+        private String photo;
+
+        private Builder() {
+        }
+
+        public SimpleCharacter build() {
+            return new SimpleCharacter(this);
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder photo(String photo) {
+            this.photo = photo;
+            return this;
+        }
     }
 }

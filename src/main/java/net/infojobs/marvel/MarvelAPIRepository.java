@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static net.infojobs.marvel.StreamsConcat.*;
 
 @Repository
 @Qualifier("api")
@@ -32,10 +33,11 @@ public class MarvelAPIRepository implements MarvelRepository {
 
     @Override
     public List<SimpleCharacter> characters() throws QueryException, AuthorizationException {
-        return Stream.concat(requestCharactersPage(0), requestCharactersPage(1))
+        return requestCharactersPage(0)
           .filter(character -> !character.getDescription().isEmpty())
-          .sorted((o1, o2) -> randomOrder())
           .map(SimpleCharacter::fromCharacter)
+          .collect(concat(roger()))
+          .sorted((o1, o2) -> randomOrder())
           .collect(toList());
     }
 
@@ -49,6 +51,10 @@ public class MarvelAPIRepository implements MarvelRepository {
 
     @Override
     public SimpleCharacter character(@PathVariable("name") String name) throws QueryException, AuthorizationException {
+        if (name.equals(roger().getName())) {
+            return roger();
+        }
+
         Map<ListCharacterParamName, String> options = new HashMap<>();
         options.put(ListCharacterParamName.NAME, name);
         List<Character> results = charactersService.listCharacter(options).getData().getResults();
@@ -60,6 +66,14 @@ public class MarvelAPIRepository implements MarvelRepository {
               if (l.size() == 1) return l.get(0);
               throw new RuntimeException();
           }));
+    }
+
+    private SimpleCharacter roger() {
+        return SimpleCharacter.builder()
+          .name("Super Roger")
+          .description("Lorem ipsum")
+          .photo("https://dl.dropboxusercontent.com/u/1587994/marvel-ij/super_roger.jpg")
+          .build();
     }
 
     private int randomOrder() {
