@@ -5,7 +5,9 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class StreamsConcat {
+import static java.util.stream.Collectors.toList;
+
+public class StreamsUtils {
 
     public static <T> Collector<T, ?, Stream<T>> concat(T element) {
         return concat(Stream.of(element));
@@ -22,5 +24,12 @@ public class StreamsConcat {
           collector.accumulator(),
           collector.combiner(),
           collector.finisher().andThen(function));
+    }
+
+    public static <T> Collector<T, ?, T> singleItem() {
+        return Collectors.collectingAndThen(toList(), l -> {
+            if (l.size() == 1) return l.get(0);
+            throw new RuntimeException();
+        });
     }
 }

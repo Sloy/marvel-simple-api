@@ -10,15 +10,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.stream.Collectors;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static net.infojobs.marvel.StreamsConcat.*;
+import static net.infojobs.marvel.StreamsUtils.concat;
+import static net.infojobs.marvel.StreamsUtils.singleItem;
 
 @Repository
 @Qualifier("api")
@@ -36,7 +33,7 @@ public class MarvelAPIRepository implements MarvelRepository {
         return requestCharactersPage(0)
           .filter(character -> !character.getDescription().isEmpty())
           .map(SimpleCharacter::fromCharacter)
-          .collect(concat(roger()))
+          .collect(concat(Stream.of(SimpleCharacter.CUSTOMS)))
           .sorted((o1, o2) -> randomOrder())
           .collect(toList());
     }
@@ -51,8 +48,9 @@ public class MarvelAPIRepository implements MarvelRepository {
 
     @Override
     public SimpleCharacter character(@PathVariable("name") String name) throws QueryException, AuthorizationException {
-        if (name.equals(roger().getName())) {
-            return roger();
+        Optional<SimpleCharacter> custom = findCustom(name);
+        if (custom.isPresent()) {
+            return custom.get();
         }
 
         Map<ListCharacterParamName, String> options = new HashMap<>();
@@ -62,18 +60,18 @@ public class MarvelAPIRepository implements MarvelRepository {
         return results.stream()
           .map(SimpleCharacter::fromCharacter)
           .limit(1)
-          .collect(Collectors.collectingAndThen(toList(), l -> {
-              if (l.size() == 1) return l.get(0);
-              throw new RuntimeException();
-          }));
+          .collect(singleItem());
     }
 
-    private SimpleCharacter roger() {
-        return SimpleCharacter.builder()
-          .name("Super Roger")
-          .description("Lorem ipsum")
-          .photo("https://dl.dropboxusercontent.com/u/1587994/marvel-ij/super_roger.jpg")
-          .build();
+    private Optional<SimpleCharacter> findCustom(@PathVariable("name") String name) {
+        try {
+            SimpleCharacter customCharacter = Stream.of(SimpleCharacter.CUSTOMS)
+              .filter(simpleCharacter -> simpleCharacter.getName().equals(name))
+              .collect(singleItem());
+            return Optional.of(customCharacter);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
     private int randomOrder() {

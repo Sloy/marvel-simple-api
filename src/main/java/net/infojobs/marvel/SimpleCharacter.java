@@ -4,6 +4,8 @@ import com.arnaudpiroelle.marvel.api.objects.Character;
 
 public class SimpleCharacter {
 
+    static SimpleCharacter[] CUSTOMS = {roger(), roc(), rafactor(), loud()};
+
     private String name;
     private String description;
     private String photo;
@@ -27,6 +29,38 @@ public class SimpleCharacter {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    static SimpleCharacter roger() {
+        return builder()
+          .name("Super Roger")
+          .description("Lorem ipsum")
+          .photo("https://dl.dropboxusercontent.com/u/1587994/marvel-ij/super_roger.jpg")
+          .build();
+    }
+
+    static SimpleCharacter roc() {
+        return builder()
+          .name("Rock Man")
+          .description("Lorem ipsum")
+          .photo("https://dl.dropboxusercontent.com/u/1587994/marvel-ij/rock_man.jpg")
+          .build();
+    }
+
+    static SimpleCharacter rafactor() {
+        return builder()
+          .name("Dr. Rafactor")
+          .description("Lorem ipsum")
+          .photo("https://dl.dropboxusercontent.com/u/1587994/marvel-ij/dr_rafactor.jpg")
+          .build();
+    }
+
+    static SimpleCharacter loud() {
+        return builder()
+          .name("Loud Ceo")
+          .description("Lorem ipsum")
+          .photo("https://dl.dropboxusercontent.com/u/1587994/marvel-ij/loud_ceo.jpg")
+          .build();
     }
 
     public String getName() {
