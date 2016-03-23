@@ -23,7 +23,7 @@ public class MarvelController {
         return marvelRepository.characters();
     }
 
-    @RequestMapping("/characters/{name}")
+    @RequestMapping("/characters/{name:.*}")
     public SimpleCharacter character(@PathVariable("name") String name) throws QueryException, AuthorizationException {
         return marvelRepository.character(name);
     }
