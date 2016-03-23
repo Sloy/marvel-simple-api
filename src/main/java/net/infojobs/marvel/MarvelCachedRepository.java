@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Repository
 @Qualifier("cache")
 public class MarvelCachedRepository implements MarvelRepository {
+
+    private static final long CACHE_KEEP_ALIVE_MILLIS = TimeUnit.MINUTES.toMillis(5);
 
     @Autowired
     private QNCache cache;
@@ -27,7 +30,7 @@ public class MarvelCachedRepository implements MarvelRepository {
         List<SimpleCharacter> cached = cache.get("ALL");
         if (cached == null) {
             cached = wrappedRepository.characters();
-            cache.set("ALL", cached, 30 * 1000);
+            cache.set("ALL", cached, CACHE_KEEP_ALIVE_MILLIS);
         }
         return cached;
     }
@@ -37,7 +40,7 @@ public class MarvelCachedRepository implements MarvelRepository {
         SimpleCharacter cached = cache.get(name);
         if (cached == null) {
             cached = wrappedRepository.character(name);
-            cache.set(name, cached, 30 * 1000);
+            cache.set(name, cached, CACHE_KEEP_ALIVE_MILLIS);
         }
         return cached;
     }
